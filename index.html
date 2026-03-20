@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --navy: #001a4d; --gold: #D4AF37; --charcoal: #0a0a0a; }
-        body { background-color: var(--charcoal); color: #fff; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--charcoal); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .gold-text { color: var(--gold); font-family: 'Cinzel', serif; }
         .tag-label {
             position: absolute;
@@ -21,24 +21,31 @@
             pointer-events: none;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             z-index: 10;
+            transform: translate(-50%, -50%);
         }
-        #photoContainer { border: 1px solid rgba(212, 175, 55, 0.2); position: relative; width: 100%; max-width: 500px; margin: auto; }
+        #photoContainer { border: 1px solid rgba(212, 175, 55, 0.2); position: relative; width: 100%; max-width: 500px; margin: auto; background: #111; min-height: 300px; display: flex; align-items: center; justify-content: center; }
         .btn-action { border: 1px solid rgba(212, 175, 55, 0.3); transition: 0.3s; text-transform: uppercase; font-size: 10px; letter-spacing: 2px; }
-        .btn-action:hover { background: var(--gold); color: var(--navy); }
+        .btn-action:hover { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+        input[type="file"] { display: none; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
     <header class="p-5 border-b border-gold/10 flex justify-between items-center bg-black/60 sticky top-0 z-50">
         <h1 class="text-xl gold-text tracking-[0.4em]">THE TAG</h1>
-        <button class="text-[10px] gold-text border border-gold/40 px-3 py-1 uppercase tracking-widest hover:bg-gold hover:text-navy transition">Subir Look</button>
+        <label for="imageUpload" class="text-[10px] gold-text border border-gold/40 px-4 py-2 uppercase tracking-widest hover:bg-gold hover:text-navy transition cursor-pointer">
+            Subir Look
+        </label>
+        <input type="file" id="imageUpload" accept="image/*">
     </header>
 
     <main class="flex-grow flex flex-col items-center py-10 px-4">
         
+        <p id="instruction" class="text-[9px] uppercase tracking-[0.3em] opacity-40 mb-4">Toca la foto para etiquetar precio</p>
+
         <div id="photoContainer" class="cursor-crosshair rounded-lg overflow-hidden">
             <img id="userPhoto" src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=800" 
-                 class="w-full h-auto opacity-90">
+                 class="w-full h-auto opacity-90 transition-opacity">
             
             <div id="tagsOverlay" class="absolute inset-0"></div>
         </div>
@@ -47,30 +54,32 @@
             <div class="flex justify-between items-center mb-6">
                 <div>
                     <p class="text-[9px] uppercase opacity-40 tracking-widest">Valor del Outfit</p>
-                    <p id="totalDisplay" class="text-4xl gold-text font-light tracking-tighter">$0 <span class="text-sm opacity-50">USD</span></p>
+                    <p id="totalDisplay" class="text-4xl gold-text font-light tracking-tighter">$0 <span class="text-sm opacity-50 font-sans">USD</span></p>
                 </div>
                 <div class="text-right">
-                    <p class="text-[9px] uppercase opacity-40 tracking-widest">Estado</p>
-                    <p class="text-xs italic text-gold">Pendiente de Votos</p>
+                    <p class="text-[9px] uppercase opacity-40 tracking-widest">Protocolo</p>
+                    <p class="text-xs italic text-gold uppercase tracking-tighter">Verified Audit</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <button class="btn-action py-4 rounded">💎 Pure Flex</button>
-                <button class="btn-action py-4 rounded">💸 Overpriced</button>
+                <button class="btn-action py-4 rounded" onclick="alert('Voto registrado: Pure Flex')">💎 Pure Flex</button>
+                <button class="btn-action py-4 rounded" onclick="alert('Voto registrado: Overpriced')">💸 Overpriced</button>
             </div>
         </div>
     </main>
 
-    <div id="tagModal" class="hidden fixed z-[100] bg-navy border border-gold p-5 shadow-2xl rounded w-64">
-        <h3 class="gold-text text-[10px] mb-4 uppercase tracking-widest border-b border-gold/20 pb-2">Etiquetar Prenda</h3>
-        <input type="text" id="itemName" placeholder="Ej: Reloj Rolex" class="bg-transparent border-b border-white/20 w-full text-xs text-white mb-4 p-2 outline-none focus:border-gold">
-        <input type="number" id="itemPrice" placeholder="Precio en USD" class="bg-transparent border-b border-white/20 w-full text-xs text-white mb-6 p-2 outline-none focus:border-gold">
-        <button onclick="saveTag()" class="w-full bg-gold text-navy text-[10px] font-bold py-2 uppercase tracking-widest">Fijar en Outfit</button>
+    <div id="tagModal" class="hidden fixed z-[100] bg-[#000d26] border border-gold p-6 shadow-2xl rounded w-72">
+        <h3 class="gold-text text-[10px] mb-5 uppercase tracking-widest border-b border-gold/20 pb-2">Etiquetar Activo</h3>
+        <div class="space-y-4">
+            <input type="text" id="itemName" placeholder="Ej: Reloj Patek" class="bg-transparent border-b border-white/20 w-full text-xs text-white p-2 outline-none focus:border-gold">
+            <input type="number" id="itemPrice" placeholder="Precio en USD" class="bg-transparent border-b border-white/20 w-full text-xs text-white p-2 outline-none focus:border-gold">
+            <button onclick="saveTag()" class="w-full bg-gold text-navy text-[10px] font-bold py-3 uppercase tracking-widest mt-4">Fijar Precio</button>
+        </div>
     </div>
 
-    <footer class="p-6 text-center text-[8px] opacity-20 uppercase tracking-[0.5em]">
-        The Tag Protocol &copy; 2026 | Strategic Luxury System
+    <footer class="p-8 text-center text-[8px] opacity-20 uppercase tracking-[0.5em]">
+        The Tag Protocol &copy; 2026 | London - New York - Dubai
     </footer>
 
     <script src="script.js"></script>
